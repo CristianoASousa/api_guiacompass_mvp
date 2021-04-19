@@ -36,10 +36,10 @@ class ProductController {
                     ]
                 ).skip(skip).limit(limit)
 
-                res.status(200).send(result)
+                return res.status(200).send(result)
 
             } catch (error) {
-                res.status(400).json({
+                return res.status(400).json({
                     error: true,
                     message: "Erro na busca"
                 })
@@ -51,9 +51,9 @@ class ProductController {
             const result = await Product.find({ product: { $regex: product, $options: 'i' } })
                 .skip(skip)
                 .limit(limit)
-            res.status(200).send(result)
+            return res.status(200).send(result)
         } catch (error) {
-            res.status(400).json({
+            return res.status(400).json({
                 error: true,
                 message: "Erro na busca"
             })
@@ -78,10 +78,10 @@ class ProductController {
         try {
 
             const product = await Product.create(req.body);
-            res.status(201).send(product).json();
+            return res.status(201).send(product).json();
 
         } catch (error) {
-            res.status(400).send(error).json({
+            return res.status(400).send(error).json({
                 error: true,
                 message: "Erro ao cadastrar o produto"
             })
@@ -98,10 +98,10 @@ class ProductController {
         try {
 
             const product = await Product.insertMany(data);
-            res.status(201).send(product).json();
+            return res.status(201).send(product).json();
 
         } catch (error) {
-            res.status(400).send(error).json({
+            return res.status(400).send(error).json({
                 error: true,
                 message: "Erro ao cadastrar o produto"
             })
@@ -111,7 +111,7 @@ class ProductController {
 
     // Update 
     async update(req, res) {
-        res.send(req.body)
+        return res.send(req.body)
     }
 }
 

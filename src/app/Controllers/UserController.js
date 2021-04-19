@@ -37,7 +37,7 @@ class UserController {
         const emailExist = req.body.email;
         await User.findOne({ email:emailExist },(err, resp) => {
             if (resp && resp.email === emailExist) { 
-                res.status(400).json({
+                return res.status(400).json({
                     err,
                     message: "Email já cadastrado"
                 })
@@ -69,10 +69,10 @@ class UserController {
                 user
             };
             
-            res.status(201).send(response).json();
+            return res.status(201).send(response).json();
 
         } catch (error) {
-            res.send(400, error).json({
+            return res.send(400, error).json({
                 error: true,
                 message: "Erro ao cadastrar o usuário"
             })
@@ -94,13 +94,13 @@ class UserController {
                 const user = await User.findById(id);
                 res.status(201).send(user);
             } catch (error) {
-                res.status(401).json({
+                return res.status(401).json({
                     error: true,
                     message: "Não autorizado"
                 })
             }
         }
-        res.status(401).json({
+        return res.status(401).json({
             error: true,
             message: "Não autorizado"
         })

@@ -24,9 +24,9 @@ class Login {
 
             user.password = null;
 
-            res.send({ user, token });
+            return res.send({ user, token });
         } catch (error) {
-            res.send(error)
+            return res.send(error)
         }
     }
 }

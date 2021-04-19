@@ -71,10 +71,10 @@ class CompanyController {
                 user
             };
             
-            res.status(201).send(response).json();
+            return res.status(201).send(response).json();
 
         } catch (error) {
-            res.status(400).send(error).json({
+            return res.status(400).send(error).json({
                 error: true,
                 message: "Erro ao cadastrar a empresa"
             })
@@ -93,15 +93,15 @@ class CompanyController {
             try {
                 await Company.updateOne({_id: companyId }, data);
                 const company = await Company.findById(companyId);
-                res.status(200).send(company)
+                return res.status(200).send(company)
             } catch (error) {
-                res.status(400).json({
+                return res.status(400).json({
                     error,
                     message: "Erro ao atualizar"
                 })
             }
         }
-        res.status(401).json({
+        return res.status(401).json({
             error: true,
             message: "Não autorizado"
         })
