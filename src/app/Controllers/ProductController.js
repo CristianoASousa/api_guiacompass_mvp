@@ -78,7 +78,8 @@ class ProductController {
         try {
 
             const product = await Product.create(req.body);
-            return res.status(201).send(product).json();
+            const newProduct = await Product.findById(product._id)
+            return res.status(201).send(newProduct).json();
 
         } catch (error) {
             return res.status(400).send(error).json({

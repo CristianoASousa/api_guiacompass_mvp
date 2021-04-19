@@ -7,7 +7,7 @@ const ProductSchema = new mongoose.Schema(
         preview: { type: String },
         colors: [
             {
-                name:{ type: String },
+                name: { type: String },
                 preview: { type: String },
             }
         ],
@@ -31,6 +31,11 @@ const ProductSchema = new mongoose.Schema(
         timestamps: true
     }
 );
+
+ProductSchema.post('save', async function (product) {
+    let slug = product.slug + "-" + product._id
+    await Product.updateOne({ _id: product._id }, { slug: slug })
+})
 
 const Product = mongoose.model('products', ProductSchema);
 
