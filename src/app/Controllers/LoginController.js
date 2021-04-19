@@ -14,10 +14,10 @@ class Login {
             const user = await User.findOne({ email }).select('+password');
 
             if (!user) {
-                return res.status(401)
+                return res.status(401).send({error: true, message: "user not found"})
             }
             if (!await bcrypt.compare(password, user.password)) {
-                return res.status(401)
+                return res.status(401).send({error: true, message: "invalid password"})
             }
 
             const token = jwt.sign({ user: user.id });
