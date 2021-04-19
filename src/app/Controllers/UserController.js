@@ -9,7 +9,10 @@ class UserController {
         var id = req.params.id
         try {
             var user = await User.findById(id)
-            return res.status(200).send(user)
+            if(user){
+                return res.status(200).send(user)
+            }
+            return res.status(400).send({error: true, message: "user not found"})
         } catch (error) {
             return res.status(400).send({error: true, message: "user not found"})
         }
