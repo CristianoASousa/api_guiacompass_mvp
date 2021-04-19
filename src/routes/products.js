@@ -20,4 +20,7 @@ router.post('/addMany', ProductController.addMany);
 // Atualizar produto
 router.put('/update', ProductController.update);
 
+// Deletar todos
+router.delete('/delete', ProductController.delete);
+
 module.exports = router;

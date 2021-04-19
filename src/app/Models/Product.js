@@ -36,6 +36,12 @@ ProductSchema.post('save', async function (product) {
     let slug = product.slug + "-" + product._id
     await Product.updateOne({ _id: product._id }, { slug: slug })
 })
+ProductSchema.post('insertMany', function (product) {
+    product.forEach( async prod => {
+        let slug = prod.slug + "-" + prod._id
+        await Product.updateOne({ _id: prod._id }, { slug: slug })
+    });
+})
 
 const Product = mongoose.model('products', ProductSchema);
 

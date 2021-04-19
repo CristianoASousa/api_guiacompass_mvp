@@ -29,9 +29,13 @@ class ProductController {
         // Pesquisa com filtro de fabricante
         if (manufacturer) {
             try {
-                const result = await Product.find().or(
+                const result = await Product.find().and(
                     [
-                        { product: { $regex: product, $options: 'i' } },
+                        { $or: [
+                            { product: { $regex: product, $options: 'i' } },
+                            { category: {$regex: product, $options: 'i' } },
+                            { tags: {$regex: product, $options: 'i' } }
+                        ] },
                         { manufacturer: manufacturer }
                     ]
                 ).skip(skip).limit(limit)
@@ -48,7 +52,11 @@ class ProductController {
 
         // Pesquisa apenas com o nome do produto
         try {
-            const result = await Product.find({ product: { $regex: product, $options: 'i' } })
+            const result = await Product.find({ $or: [
+                { product: { $regex: product, $options: 'i' } },
+                { category: {$regex: product, $options: 'i' } },
+                { tags: {$regex: product, $options: 'i' } }
+            ] })
                 .skip(skip)
                 .limit(limit)
             return res.status(200).send(result)
@@ -113,6 +121,15 @@ class ProductController {
     // Update 
     async update(req, res) {
         return res.send(req.body)
+    }
+    // Delete
+    async delete(req, res) {
+        try {
+            await Product.deleteMany({manufacturer: 'henn'})
+            return res.status(200).send({error: false, message: "success"})
+        } catch (error) {
+            return res.status(200).send({error: true, message: error})
+        }
     }
 }
 
