@@ -33,7 +33,7 @@ class CompanyController {
         const emailExist = req.body.email;
         await User.findOne({ email:emailExist },(err, resp) => {
             if (resp && resp.email === emailExist) { 
-                res.status(400).json({
+                return res.status(400).json({
                     err,
                     message: "Email já cadastrado"
                 })
