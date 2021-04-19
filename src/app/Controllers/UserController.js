@@ -7,8 +7,13 @@ class UserController {
     //Buscando um user pelo id
     async show(req, res) {
         var id = req.params.id
-        var user = await User.findById(id)
-        return res.status(200).send(user)
+        try {
+            var user = await User.findById(id)
+            return res.status(200).send(user)
+        } catch (error) {
+            return res.status(400).send({error: true, message: "user not found"})
+        }
+        
     }
 
     // Cadastrando o usuário
