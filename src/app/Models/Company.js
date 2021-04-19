@@ -14,7 +14,7 @@ const CompanySchema = new mongoose.Schema(
             },
             whatsapp: { type: String },
             landline: { type: String },
-            email: { type: String,  unique: true }
+            email: { type: String }
         },
         address: {
             street: { type: String },
