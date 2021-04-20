@@ -31,15 +31,33 @@ const ProductSchema = new mongoose.Schema(
         timestamps: true
     }
 );
+// padronizando as tags, todas em maiúsculo 
+function generateTags(text){
+    const separators = /[s,.;:()'+]/g;
+    text = text.toUpperCase().normalize("NFD").replace(separators, "");
+    //separando e removendo repetidos
+    const arr = text.split(' ').filter((item, pos, self) => self.indexOf(item) == pos);
+    //removendo nulls, undefineds e strings vazias
+    return arr.filter(item => (item));
+}
+
+ProductSchema.pre('save', function(next) {
+    this.tags = this.tags.map(tag => tag.toUpperCase())
+    this.tags = [...this.tags, ...generateTags(this.product)]
+    next()
+})
 
 ProductSchema.post('save', async function (product) {
     let slug = product.slug + "-" + product._id
     await Product.updateOne({ _id: product._id }, { slug: slug })
 })
+
 ProductSchema.post('insertMany', function (product) {
     product.forEach( async prod => {
         let slug = prod.slug + "-" + prod._id
-        await Product.updateOne({ _id: prod._id }, { slug: slug })
+        let tags = prod.tags.map(tag => tag.toUpperCase())
+        tags = [...tags, ...generateTags(prod.product)]
+        await Product.updateOne({ _id: prod._id }, { slug , tags})
     });
 })
 

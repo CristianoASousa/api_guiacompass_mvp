@@ -1,8 +1,18 @@
 const Product = require('../Models/Product');
 const yup = require('yup');
 
+function generateTags(text){
+    const separators = /[s,.;:()'+]/g;
+    text = text.toUpperCase().normalize("NFD").replace(separators, "");
+    //separando e removendo repetidos
+    const arr = text.split(' ').filter((item, pos, self) => self.indexOf(item) == pos);
+    //removendo nulls, undefineds e strings vazias
+    return arr.filter(item => (item));
+}
+
 class ProductController {
 
+   
     // Buscar empresa pelo id
     async show(req, res) {
         var id = req.params.id;
@@ -18,8 +28,8 @@ class ProductController {
     //Buscar produto por nome, fabricante, categoria, tags
     async search(req, res) {
         
-        const regex = req.query.product.trim().replace(/\s+/g, ' ')
-        const product = new RegExp(regex.replace(/\s/g, '|'))
+        const query = req.query.product.trim().replace(/\s+/g, ' ')
+        const search = generateTags(query)
         const manufacturer = req.query.manufacturer ? req.query.manufacturer : false;
         //Limite de páginas
         const currentPage = req.query.currentPage;
@@ -31,11 +41,7 @@ class ProductController {
             try {
                 const result = await Product.find().and(
                     [
-                        { $or: [
-                            { product: { $regex: product, $options: 'i' } },
-                            { category: {$regex: product, $options: 'i' } },
-                            { tags: {$regex: product, $options: 'i' } }
-                        ] },
+                        { tags: { $all: search } },
                         { manufacturer: manufacturer }
                     ]
                 ).skip(skip).limit(limit)
@@ -52,13 +58,8 @@ class ProductController {
 
         // Pesquisa apenas com o nome do produto
         try {
-            const result = await Product.find({ $or: [
-                { product: { $regex: product, $options: 'i' } },
-                { category: {$regex: product, $options: 'i' } },
-                { tags: {$regex: product, $options: 'i' } }
-            ] })
-                .skip(skip)
-                .limit(limit)
+
+            const result = await Product.find( { tags: { $all: search } } )
             return res.status(200).send(result)
         } catch (error) {
             return res.status(400).json({
@@ -107,7 +108,7 @@ class ProductController {
         try {
 
             const product = await Product.insertMany(data);
-            return res.status(201).send(product).json();
+            return res.status(201).send({error: false, message: "success"});
 
         } catch (error) {
             return res.status(400).send(error).json({
