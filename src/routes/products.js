@@ -4,8 +4,10 @@ const ProductController = require('../app/Controllers/ProductController');
 var multer  = require('multer');
 var storage = multer.memoryStorage()
 var upload = multer({ storage: storage });
+const auth = require('../config/auth');
 
 
+router.use(auth);
 
 router.use(upload.single('file'));
 //Buscar produto por nome, fabricante, categoria, tags
